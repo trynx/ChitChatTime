@@ -6,35 +6,35 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class DBManager {
+/* - Explanation -
+ * The DBManager would be the interpreter between the Client and the Server
+ * all the operations will go through this class
+ */
+class DBManager {
 
-    // Instance for Singleton DP
-
+    // - Singleton Start -
     private static DBManager instance;
 
     // Private Constructor - to prevent instantiation from outside
     private DBManager() {}
 
-    // Random try
     // Method to initial the class
-    public DBManager getInstance() {
+    static DBManager getInstance() {
         // Lazy Initialization - to initial the instance once
         if (instance == null) instance = new DBManager();
         return instance;
     }
+    // - Singleton End -
 
 
+    // - Connection to Server Start -
     private  Socket socket;
 
     // Rest of code for DB Manager
-    // TODO - Prepare Statement (need to separate in chunks depends which class? )
-    // Should make different method depend on which prepare statement of which function the program should execute
-    // TODO - JSON Parse - For chatting text from Chat class
-    // TODO - JDBC - Connecting from Login/out class & Register class
 
 
     // Input and Output stream also here , connect to the server
-    public void serverConnect() {
+    private void serverConnect(String userInputScanner) {
         try
         {
             // From where to connect
@@ -54,17 +54,17 @@ public class DBManager {
             OutputStream osObj = socket.getOutputStream();
             OutputStreamWriter oswObj = new OutputStreamWriter(osObj);
             BufferedWriter bwObj = new BufferedWriter(oswObj);
+
             // Methods of classes
             // Write everything that is need , it will send to the DBManager
             // Then the DBManager return the stream from the server
-            // TODO - Add scanner to farther testing
-            String messageSend = "connect";
+            String messageSend = userInputScanner;
 
             // Message send
             String sendMsg = messageSend + "\n";
             bwObj.write(sendMsg);
             bwObj.flush();
-            System.out.println("Message sent to the server " + sendMsg);
+            System.out.print("Message sent to the server " + sendMsg);
 
             // Get the return message from server
             InputStream isObj = socket.getInputStream();
@@ -84,6 +84,40 @@ public class DBManager {
             }
         }
     }
+
+    // - Connection to Server End -
+
+
+    // - Client Entry Response Start -
+    void clientInput(String clientInputMsg){
+        // Check which input , and execute that input
+        // Register , Login or Check
+        switch (clientInputMsg.toLowerCase()){
+            case "register":
+                // Register Class
+                System.out.println("register\n");
+                this.serverConnect("register");
+                break;
+            case "login":
+                // Login class
+                System.out.println("login\n");
+                this.serverConnect("login");
+                break;
+            case "check":
+                System.out.println("Connecting to the server ... ");
+               this.serverConnect("check");
+                break;
+            case "logout":
+                System.out.println("Disconnect from chat.\n");
+                this.serverConnect("logout");
+                MyClientReal.connected = false;
+                break;
+            default:
+                System.out.println("Please try again \nType register or login");
+
+        }
+    }
+    // - Client Entry Response End -
 
 }
 

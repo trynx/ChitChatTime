@@ -8,23 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DBManager {
-   /*TESTING ---- DELETE COMMENT LATER
-   // Instance for Singleton DP
 
-    public static DBManager instance;
-
-    // Private Constructor - to prevent instantiation from outside
-    private DBManager(){}
-
-    // Method to initial the class
-    public static DBManager getInstance(){
-        // Lazy Initialization - to initial the instance once
-        if(instance == null) instance = new DBManager();
-        return instance;
-    }
-    TESTING ---- DELETE COMMENT LATER*/
-
-   // Here the DBManagerServer will receive the commands from the DBManagerClient and execute them
+    // Here the DBManagerServer will receive the commands from the DBManagerClient and execute them
     // This way is done so the Client doesn't know what exactly is being done
 
 
@@ -60,24 +45,12 @@ public class DBManager {
                 // The Message from the Client
                 // [ All the commands from the Client]
                 String clientNumber = brObj.readLine();
-                switchY(clientNumber);
+
+
                 System.out.println("Message received from client is " + clientNumber);
+                switchY(clientNumber);
                 // Done setting
 
-
-                /*
-                // Multiply the number be 2 , and send back to the client
-                String returnMessage;
-                try {
-                    int numberIntToFormat = Integer.parseInt(clientNumber);
-                    int returnValue = numberIntToFormat * 2;
-                    returnMessage = String.valueOf(returnValue) + "\n";
-
-                } catch (NumberFormatException e) {
-                    returnMessage = "Please enter a proper number\n";
-                    e.printStackTrace();
-                }
-                */
                 String returnMessage = "Done" + "\n";
                 // Sending response back to client
                 OutputStream osObj = socket.getOutputStream();
@@ -100,13 +73,13 @@ public class DBManager {
                     e.printStackTrace();
                 }
             }
-
-
         //}
+    }
+    // - End of test main -
 
-    } // End of test main
 
-    // JDBC Connect Method - Start
+    // - JDBC Start -
+    // TODO - Change to a class (?)
     private static void jdbcConnection() {
 
 
@@ -133,7 +106,8 @@ public class DBManager {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    } // End of JDBC
+    }
+    // - JDBC End -
 
     // Testing switch with method execute
     // Testing pass ! :D
