@@ -3,17 +3,20 @@ class Register {
     private String usernameReg, passwordReg;
     private int ageReg;
 
-    void  registerMethod(String username, String password, int age){
+    String registerMethod(String username, String password, int age){
 
      if(username == null && password == null){
          System.out.println("Username or password unable\n Try again");
      }
      System.out.println("Registering");
 
-    setUsernameReg(username);
-    setPasswordReg(password);
-    setAgeReg(age);
 
+     String userInfo = username.concat(",").concat(password).concat(",").concat(Integer.toString(age));
+    /*setUsernameReg(username);
+    setPasswordReg(password);
+    setAgeReg(age);*/
+
+    return userInfo;
  }
 
  private  void setUsernameReg(String usernameReg){

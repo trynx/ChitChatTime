@@ -35,7 +35,7 @@ public class MyClientReal {
                 // Inserting data to Register
                 // register.registerMethod(usernameReg, passwordReg, ageReg);
                 // Transfer the data from Register to DBManager
-                dbManager.registerServer(usernameReg,passwordReg,ageReg);
+                dbManager.registerServer(register.registerMethod(usernameReg, passwordReg, ageReg));
             }
             else dbManager.clientInput(userInputScn.next());
 

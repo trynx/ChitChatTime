@@ -14,6 +14,7 @@ public class DBManager {
 
 
     private static Socket socket;
+    private static boolean on;
 
     // Start of main test -- DELETE LATER
     public static void main(String [] args) {
@@ -46,6 +47,7 @@ public class DBManager {
                 // [All the commands from the Client]
                 String clientNumber = brObj.readLine();
 
+
                 System.out.println("Message received from client is " + clientNumber);
                 switchY(clientNumber);
                 // Done setting
@@ -77,6 +79,23 @@ public class DBManager {
     // - End of test main -
 
 
+
+
+
+    // Maybe to do a class for this , so it could be change on at live without dropping the server ?
+    // TODO - Change to a proper name once it's more developed
+    private static void switchY(String switchy){
+
+        if(switchy.equalsIgnoreCase("register")) {
+            System.out.println("Inside Register");
+            on = true;
+        }
+
+        if (on){
+
+        }
+    }
+
     // - JDBC Start -
     // TODO - Change to a class (?)
     private static void jdbcConnection() {
@@ -107,28 +126,4 @@ public class DBManager {
         }
     }
     // - JDBC End -
-
-    // Testing switch with method execute
-    // Testing pass ! :D
-    // Maybe to do a class for this , so it could be change on at live without dropping the server ?
-    // TODO - Change to a proper name once it's more developed
-    static String username = "";
-
-    private static void switchY(String switchy){
-        boolean registering = false;
-
-        String password = "";
-        String age = "";
-        int counter;
-        System.out.println("Inside switchy");
-        if(switchy.equalsIgnoreCase("register")){
-            System.out.println("Inside Register");
-            // keep the loop on until finish getting all information to register
-            registering = true;
-
-        }
-        while(registering){}
-
-
-    }
 }

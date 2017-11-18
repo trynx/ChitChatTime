@@ -118,11 +118,9 @@ class DBManager {
     // - Client Entry Response End -
 
     // Register information
-    void registerServer(String username, String password, int age){
+    void registerServer(String userInfo){
         this.serverConnect("register");
-        this.serverConnect(username);
-        this.serverConnect(password);
-        this.serverConnect(Integer.toString(age));
+        this.serverConnect(userInfo);
 
     }
     // Depend on which execution the Client does , it will send to the server
