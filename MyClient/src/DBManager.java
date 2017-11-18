@@ -10,11 +10,12 @@ public class DBManager {
 
     // Instance for Singleton DP
 
-    public static DBManager instance;
+    private static DBManager instance;
 
     // Private Constructor - to prevent instantiation from outside
     private DBManager() {}
 
+    // Random try
     // Method to initial the class
     public DBManager getInstance() {
         // Lazy Initialization - to initial the instance once
@@ -44,7 +45,7 @@ public class DBManager {
             // Client must know from where to connect and which port
             socket = new Socket(address, port);
 
-            /** Insert port
+            /* Insert port
              *ServerSocket serverSocket = new ServerSocket(port);
              *System.out.println("Server started at port " + port);
              */
