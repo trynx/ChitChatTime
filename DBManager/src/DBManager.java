@@ -43,9 +43,8 @@ public class DBManager {
                 BufferedReader brObj = new BufferedReader(isrObj);
 
                 // The Message from the Client
-                // [ All the commands from the Client]
+                // [All the commands from the Client]
                 String clientNumber = brObj.readLine();
-
 
                 System.out.println("Message received from client is " + clientNumber);
                 switchY(clientNumber);
@@ -113,13 +112,23 @@ public class DBManager {
     // Testing pass ! :D
     // Maybe to do a class for this , so it could be change on at live without dropping the server ?
     // TODO - Change to a proper name once it's more developed
-    private static void switchY(String switchy){
+    static String username = "";
 
-        switch(switchy.toLowerCase()){
-            case "connect":
-                jdbcConnection();
-                break;
+    private static void switchY(String switchy){
+        boolean registering = false;
+
+        String password = "";
+        String age = "";
+        int counter;
+        System.out.println("Inside switchy");
+        if(switchy.equalsIgnoreCase("register")){
+            System.out.println("Inside Register");
+            // keep the loop on until finish getting all information to register
+            registering = true;
 
         }
+        while(registering){}
+
+
     }
 }

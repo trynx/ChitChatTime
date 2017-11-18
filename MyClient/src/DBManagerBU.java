@@ -2,8 +2,8 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class DBManagerBU {
-   /*TESTING ---- DELETE COMMENT LATER
+/* public class DBManagerBU {
+   /* TESTING ---- DELETE COMMENT LATER
    // Instance for Singleton DP
 
     public static DBManager instance;
@@ -17,7 +17,8 @@ public class DBManagerBU {
         if(instance == null) instance = new DBManager();
         return instance;
     }
-    TESTING ---- DELETE COMMENT LATER*/
+    TESTING ---- DELETE COMMENT LATER //*
+
 
     private static Socket socket;
    // Start of main test -- DELETE LATER
@@ -39,10 +40,10 @@ public class DBManagerBU {
            // Client must know from where to connect and which port
            socket = new Socket(address, port);
 
-           /** Insert port
+           /*Insert port
             *ServerSocket serverSocket = new ServerSocket(port);
             *System.out.println("Server started at port " + port);
-            */
+           //*
 
            // Client send message to the server
            OutputStream osObj = socket.getOutputStream();
@@ -86,3 +87,4 @@ public class DBManagerBU {
    } // End of test main
 
 }
+*/

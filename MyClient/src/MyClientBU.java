@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+/*
 public class MyClientBU {
 
     // Connection between Server and client
@@ -22,7 +22,7 @@ public class MyClientBU {
             /** Insert port
             *ServerSocket serverSocket = new ServerSocket(port);
             *System.out.println("Server started at port " + port);
-            */
+            //*
 
             // Client send message to the server
             OutputStream osObj = socket.getOutputStream();
@@ -63,3 +63,4 @@ public class MyClientBU {
 
     }
 }
+*/

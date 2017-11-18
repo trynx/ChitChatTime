@@ -94,9 +94,7 @@ class DBManager {
         // Register , Login or Check
         switch (clientInputMsg.toLowerCase()){
             case "register":
-                // Register Class
-                System.out.println("register\n");
-                this.serverConnect("register");
+
                 break;
             case "login":
                 // Login class
@@ -119,6 +117,28 @@ class DBManager {
     }
     // - Client Entry Response End -
 
+    // Register information
+    void registerServer(String username, String password, int age){
+        this.serverConnect("register");
+        this.serverConnect(username);
+        this.serverConnect(password);
+        this.serverConnect(Integer.toString(age));
+
+    }
+    // Depend on which execution the Client does , it will send to the server
+    void toServer(String execution){
+        switch (execution.toLowerCase()){
+            case "register":
+               this.serverConnect("register"); // Need to add additional information
+
+                break;
+            case "login":
+                this.serverConnect("login"); // Which user ?
+
+                break;
+
+        }
+    }
 }
 
 
