@@ -12,9 +12,10 @@ public class DBManager {
     // Here the DBManagerServer will receive the commands from the DBManagerClient and execute them
     // This way is done so the Client doesn't know what exactly is being done
 
-
+    static private Register reg = Register.getInstance();
+    static private JDBC jdbc = JDBC.getInstance();
     private static Socket socket;
-    private static boolean on;
+    private static boolean on = false;
 
     // Start of main test -- DELETE LATER
     public static void main(String [] args) {
@@ -23,6 +24,7 @@ public class DBManager {
         // Should make different method depend on which prepare statement of which function the program should execute
         // TODO - JSON Parse - For chatting text from Chat class
         // TODO - JDBC - Connecting from Login/out class & Register class
+
 
 
         try {
@@ -81,20 +83,40 @@ public class DBManager {
 
 
 
-
+    private static int counter = 0;
     // Maybe to do a class for this , so it could be change on at live without dropping the server ?
     // TODO - Change to a proper name once it's more developed
     private static void switchY(String switchy){
 
-        if(switchy.equalsIgnoreCase("register")) {
+        // Registration Phase
+        // Gets each information from the client in order User , Password and Age
+        // Then add it depend on the counter
+        if(switchy.equalsIgnoreCase("register") || on) {
             System.out.println("Inside Register");
+            // Start the loop for the registration
+
+            if (on){
+                switch(counter) {
+                    case 0:
+                        reg.setUsername(switchy);
+                        counter++;
+                        break;
+                    case 1:
+                        reg.setPassword(switchy);
+                        counter++;
+                        break;
+                    case 2:
+                        reg.setAge(Integer.parseInt(switchy));
+                        on = false;
+                        jdbc.jdbcRegister(reg.getUsername(),reg.getPassword(),reg.getAge());
+                        System.out.println("Got to case 2 Switchy");
+                }
+            }
             on = true;
         }
 
-        if (on){
-            
 
-        }
+
     }
 
     // - JDBC Start -

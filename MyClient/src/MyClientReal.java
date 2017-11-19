@@ -26,6 +26,8 @@ public class MyClientReal {
 
 
             if(userInputScn.next().equalsIgnoreCase("register")){
+
+                // Update after testing to Get/Set for Register Class
                 System.out.println("Username: ");
                 String usernameReg = userInputScn.next();
                 System.out.println("Password: ");
@@ -35,7 +37,7 @@ public class MyClientReal {
                 // Inserting data to Register
                 // register.registerMethod(usernameReg, passwordReg, ageReg);
                 // Transfer the data from Register to DBManager
-                dbManager.registerServer(register.registerMethod(usernameReg, passwordReg, ageReg));
+                dbManager.registerServer(usernameReg,passwordReg,ageReg);
             }
             else dbManager.clientInput(userInputScn.next());
 

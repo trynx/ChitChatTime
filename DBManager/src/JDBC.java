@@ -5,6 +5,20 @@ import java.sql.SQLException;
 
 public class JDBC {
 
+    // - Singleton Start -
+    private static JDBC instance;
+
+    // Private Constructor - to prevent instantiation from outside
+    private JDBC() {}
+
+    // Method to initial the class
+    static JDBC getInstance() {
+        // Lazy Initialization - to initial the instance once
+        if (instance == null) instance = new JDBC();
+        return instance;
+    }
+    // - Singleton End -
+
     // - JDBC Start -
     // TODO - Change to a class (?)
 
@@ -23,11 +37,12 @@ public class JDBC {
             // TODO - Array of Prepare statement
             PreparedStatement stmt;
 
-            stmt = db.prepareStatement("INSERT INTO users (name, password, age) VALUES (?, ?, ?);");
+            stmt = db.prepareStatement("INSERT INTO users (name, password, age) VALUES (?, ?, ?)");
             stmt.setString(1, username);
             stmt.setString(2, password);
             stmt.setInt(3, age);
             stmt.executeUpdate();
+            System.out.println("Successfully registered \n Welcome to Chit Chat !");
             //stmt = db.prepareStatement("INSERT INTO users (name,password,age) VALUES ('Nai','22',33)");
 
 
@@ -36,7 +51,7 @@ public class JDBC {
         }
     }
 
-    public static void jdbcRegister(String userInfo) {
+    public static void jdbcRegister(String userInfo, int counter) {
 
         try {
             Connection db = DriverManager.getConnection(url, user, dbPassword);
@@ -44,10 +59,10 @@ public class JDBC {
             // TODO - Array of Prepare statement
             PreparedStatement stmt;
 
-            stmt = db.prepareStatement("INSERT INTO users (name, password, age) VALUES (?);");
-            stmt.setString(1, userInfo);
-
+            stmt = db.prepareStatement("INSERT INTO users (name,password,age) VALUES (?, ?, ?)");
+            stmt.setString(counter, userInfo);
             stmt.executeUpdate();
+            System.out.println("Successfully registered \n Welcome to Chit Chat !");
             //stmt = db.prepareStatement("INSERT INTO users (name,password,age) VALUES ('Nai','22',33)");
 
 
