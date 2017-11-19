@@ -35,5 +35,25 @@ public class JDBC {
             ex.printStackTrace();
         }
     }
+
+    public static void jdbcRegister(String userInfo) {
+
+        try {
+            Connection db = DriverManager.getConnection(url, user, dbPassword);
+            // SQL Prepare statement
+            // TODO - Array of Prepare statement
+            PreparedStatement stmt;
+
+            stmt = db.prepareStatement("INSERT INTO users (name, password, age) VALUES (?);");
+            stmt.setString(1, userInfo);
+
+            stmt.executeUpdate();
+            //stmt = db.prepareStatement("INSERT INTO users (name,password,age) VALUES ('Nai','22',33)");
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
     // - JDBC End -
 }
