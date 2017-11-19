@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fd24bd8a-368d-4234-b5c6-5906f466f4a8" name="Default" comment="Registration Working v1">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../DBManager/.idea/vcs.xml" />
+    <list default="true" id="fd24bd8a-368d-4234-b5c6-5906f466f4a8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../DBManager/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../DBManager/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../DBManager/src/DBManager.java" afterPath="$PROJECT_DIR$/../DBManager/src/DBManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../DBManager/src/JDBC.java" afterPath="$PROJECT_DIR$/../DBManager/src/JDBC.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DBManager.java" afterPath="$PROJECT_DIR$/src/DBManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MyClientReal.java" afterPath="$PROJECT_DIR$/src/MyClientReal.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Register.java" afterPath="$PROJECT_DIR$/src/Register.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -353,7 +347,14 @@
       <option name="project" value="LOCAL" />
       <updated>1511029463958</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Registration Working v1">
+      <created>1511122890558</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1511122890558</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
