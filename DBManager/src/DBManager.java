@@ -1,5 +1,4 @@
 import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
@@ -13,15 +12,17 @@ public class DBManager {
     // This way is done so the Client doesn't know what exactly is being done
 
     static private Register reg = Register.getInstance();
+    static private LogInOut login = LogInOut.getInstance();
     static private JDBC jdbc = JDBC.getInstance();
     private static Socket socket;
-    private static boolean on = false;
+    private static boolean onReg = false;
+    private static boolean onLog = false;
 
     // Start of main test -- DELETE LATER
     public static void main(String [] args) {
         // Rest of code for DB Manager
         // TODO - Prepare Statement (need to separate in chunks depends which class? )
-        // Should make different method depend on which prepare statement of which function the program should execute
+        // Should make different method depend onReg which prepare statement of which function the program should execute
         // TODO - JSON Parse - For chatting text from Chat class
         // TODO - JDBC - Connecting from Login/out class & Register class
 
@@ -51,10 +52,11 @@ public class DBManager {
 
 
                 System.out.println("Message received from client is " + clientNumber);
-                switchY(clientNumber);
                 // Done setting
 
-                String returnMessage = "Done" + "\n";
+                // Response from the method switchY , which return what was the action taken
+                String returnMessage = switchY(clientNumber) + "\n";
+
                 // Sending response back to client
                 OutputStream osObj = socket.getOutputStream();
                 OutputStreamWriter oswObj = new OutputStreamWriter(osObj);
@@ -83,70 +85,63 @@ public class DBManager {
 
 
 
-    private static int counter = 0;
-    // Maybe to do a class for this , so it could be change on at live without dropping the server ?
+
+    // Maybe to do a class for this , so it could be change onReg at live without dropping the server ?
     // TODO - Change to a proper name once it's more developed
-    private static void switchY(String switchy){
+
+    private static int counterReg = 0; // Counter for Registration switch
+    private static int counterLog = 0; // Counter for Registration switch
+
+    private static String switchY(String switchy){
+
+
+        // Login Phase
+        if(switchy.equalsIgnoreCase("login") || onLog){
+            if (onLog){
+                switch(counterLog) {
+                    case 0:
+                        login.setUsername(switchy);
+                        counterLog++;
+                        break;
+                    case 1:
+                        login.setPassword(switchy);
+                        counterLog = 0;
+                        onLog = false;
+                        return jdbc.jdbcLogin(login.getUsername(),login.getPassword());
+                }
+            }
+            onLog = true;
+            return "In login";
+        }
 
         // Registration Phase
         // Gets each information from the client in order User , Password and Age
-        // Then add it depend on the counter
-        if(switchy.equalsIgnoreCase("register") || on) {
-            System.out.println("Inside Register");
-            // Start the loop for the registration
+        // Then add it depend onReg the counterReg
+        else if(switchy.equalsIgnoreCase("register") || onReg) {
 
-            if (on){
-                switch(counter) {
+            // Start the loop for the registration
+            if (onReg){
+                switch(counterReg) {
                     case 0:
                         reg.setUsername(switchy);
-                        counter++;
+                        counterReg++;
                         break;
                     case 1:
                         reg.setPassword(switchy);
-                        counter++;
+                        counterReg++;
                         break;
                     case 2:
                         reg.setAge(Integer.parseInt(switchy));
-                        on = false;
-                        jdbc.jdbcRegister(reg.getUsername(),reg.getPassword(),reg.getAge());
-                        System.out.println("Got to case 2 Switchy");
+                        onReg = false;
+                        counterReg = 0;
+                        return  jdbc.jdbcRegister(reg.getUsername(),reg.getPassword(),reg.getAge());
                 }
             }
-            on = true;
+            onReg = true;
+
         }
 
-
+        return "Not yet";
 
     }
-
-    // - JDBC Start -
-    // TODO - Change to a class (?)
-    private static void jdbcConnection() {
-
-
-        // TODO - Make a Database user [bad practice to use root]
-        String dbName = "chitchattime";
-        String user = "root";
-        String password = "";
-        int port = 3306;
-        String url = "jdbc:mysql://127.0.0.1:" + port + "/" + dbName;
-
-        // This method will only be execute from DBManager (will be clear later on)
-
-
-        try {
-            Connection db = DriverManager.getConnection(url, user, password);
-
-            // SQL Prepare statement -- Testing connection JDBC
-            // TODO - Array of Prepare statement
-            PreparedStatement stmt;
-            // YEY WORKEDDD :DD
-            stmt = db.prepareStatement("INSERT INTO users (name,password,age) VALUES ('Nai','22',33)");
-            stmt.execute();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-    // - JDBC End -
 }

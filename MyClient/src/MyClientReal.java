@@ -22,10 +22,22 @@ public class MyClientReal {
         // Loop forever for client message
         while(connected){
             System.out.print("~ ");
+            // userSC save user input and do validation in the IF control flow
+            String userSC = userInputScn.next();
 
+            // - Client login start -
+            if(userSC.equalsIgnoreCase("login")){
+                System.out.println("Username: ");
+                String usernameLog = userInputScn.next();
+                System.out.println("Password: ");
+                String passwordLog = userInputScn.next();
+                // Send the data to DBManager
+                dbManager.loginServer(usernameLog,passwordLog);
 
+            }// - Client login end -
 
-            if(userInputScn.next().equalsIgnoreCase("register")){
+            // - Client registration start -
+           else if(userSC.equalsIgnoreCase("register")){
 
                 // Update after testing to Get/Set for Register Class
                 System.out.println("Username: ");
@@ -35,10 +47,11 @@ public class MyClientReal {
                 System.out.println("Age: ");
                 int ageReg = userInputScn.nextInt();
                 // Inserting data to Register
+                // TODO - Make this method work once Register , LogIn class work as necessary
                 // register.registerMethod(usernameReg, passwordReg, ageReg);
-                // Transfer the data from Register to DBManager
+                // Send the data to DBManager
                 dbManager.registerServer(usernameReg,passwordReg,ageReg);
-            }
+            } // - Client registration end -
             else dbManager.clientInput(userInputScn.next());
 
         }
