@@ -3,21 +3,18 @@ class Register {
     private String usernameReg, passwordReg;
     private int ageReg;
 
-   /* String registerMethod(String username, String password, int age){
-
-     if(username == null && password == null){
-         System.out.println("Username or password unable\n Try again");
-     }
-     System.out.println("Registering");
-
-     // Set all the user information into a string
-    // String userInfo = "'" + username + "'" + "," + "'" + password + "'" + ","  + Integer.toString(age) ;
-    setUsernameReg(username);
-    setPasswordReg(password);
-    setAgeReg(age);
+    // User registration method , gets the user information and conver into a String array.
+    // The array is sent to DBManager
+   String regUser(String username, String password, int age){
+     String strAge = Interget.toString(age);   
+     if(username == null || password == null || strAge == null){
+         return "Username, password or age are unable \nTry again";
+     } 
+      
+    String [] userInfo = {username, password, strAge};
 
     return userInfo;
- } */
+ } 
 
  private  void setUsernameReg(String usernameReg){
      this.usernameReg = usernameReg;
