@@ -97,15 +97,16 @@ public class JDBC {
             int passwordIndex   = resultSet.findColumn("password");
 
             // Check of username and password
-            while (resultSet.next()){
+            for(resultSet.first();!resultSet.isLast();resultSet.next()){
 
-                if(resultSet.getString(nameIndex).equalsIgnoreCase(username) && resultSet.getString(passwordIndex).equals(password)){
+                if(resultSet.getString("name").equalsIgnoreCase(username) && resultSet.getString("password").equals(password)){
                     return "Welcome " + username;
-                } else {
-                    return "Wrong username or password , try again :(";
-                }
 
-            }
+                }
+                System.out.println(resultSet.getString("name"));
+                System.out.println(resultSet.getString("password"));
+
+           }
 
 
 
@@ -118,11 +119,11 @@ public class JDBC {
 
     // The encryption for token
     // Use Hashing with MD5
-    // TODO - Add UUID check
+    // TODO - Add a better method for encryption
     private String tokenToDo(String toToken){
 
 
-            MessageDigest md = MessageDigest.getInstance("MD5");
+           // MessageDigest md = MessageDigest.getInstance("MD5");
 
 
 

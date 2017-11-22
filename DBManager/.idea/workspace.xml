@@ -3,16 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8a6fb5e8-2157-46a1-b7a1-ab01ad7cc464" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DBManager.java" afterPath="$PROJECT_DIR$/src/DBManager.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/JDBC.java" afterPath="$PROJECT_DIR$/src/JDBC.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/LogInOut.java" afterPath="$PROJECT_DIR$/src/LogInOut.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../MyClient/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../MyClient/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../MyClient/src/DBManager.java" afterPath="$PROJECT_DIR$/../MyClient/src/DBManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../MyClient/src/Login.java" afterPath="$PROJECT_DIR$/../MyClient/src/Login.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../MyClient/src/MyClientReal.java" afterPath="$PROJECT_DIR$/../MyClient/src/MyClientReal.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Nikita Project.txt" afterPath="$PROJECT_DIR$/../Nikita Project.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../MyClient/src/DBManagerBU.java" afterPath="$PROJECT_DIR$/../MyClient/src/Backup/DBManagerBU.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../MyClient/src/MyClientBU.java" afterPath="$PROJECT_DIR$/../MyClient/src/Backup/MyClientBU.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -27,7 +19,7 @@
       <file leaf-file-name="DBManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DBManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-576">
+            <state relative-caret-position="-117">
               <caret line="97" column="22" lean-forward="true" selection-start-line="97" selection-start-column="22" selection-end-line="97" selection-end-column="22" />
               <folding />
             </state>
@@ -37,8 +29,8 @@
       <file leaf-file-name="JDBC.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/JDBC.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="91">
-              <caret line="122" column="0" lean-forward="true" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
+            <state relative-caret-position="104">
+              <caret line="98" column="45" lean-forward="true" selection-start-line="98" selection-start-column="45" selection-end-line="98" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -49,7 +41,7 @@
       <file leaf-file-name="LogInOut.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/LogInOut.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
+            <state relative-caret-position="376">
               <caret line="26" column="37" lean-forward="true" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
               <folding>
                 <element signature="e#695#696#0" expanded="true" />
@@ -318,7 +310,14 @@
       <option name="project" value="LOCAL" />
       <updated>1511161450858</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Registration + Login Done , Token method start">
+      <created>1511253774881</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1511253774881</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -358,7 +357,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Starting ResultSet for jdbcRegister method" />
-    <option name="LAST_COMMIT_MESSAGE" value="Starting ResultSet for jdbcRegister method" />
+    <MESSAGE value="Registration + Login Done , Token method start" />
+    <option name="LAST_COMMIT_MESSAGE" value="Registration + Login Done , Token method start" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -594,17 +594,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/LogInOut.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="26" column="37" lean-forward="true" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
-          <folding>
-            <element signature="e#695#696#0" expanded="true" />
-            <element signature="e#743#744#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/MyServerDummy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
@@ -615,16 +604,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DBManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-576">
+        <state relative-caret-position="-117">
           <caret line="97" column="22" lean-forward="true" selection-start-line="97" selection-start-column="22" selection-end-line="97" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/LogInOut.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="376">
+          <caret line="26" column="37" lean-forward="true" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
+          <folding>
+            <element signature="e#695#696#0" expanded="true" />
+            <element signature="e#743#744#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/JDBC.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="122" column="0" lean-forward="true" selection-start-line="122" selection-start-column="0" selection-end-line="122" selection-end-column="0" />
+        <state relative-caret-position="104">
+          <caret line="98" column="45" lean-forward="true" selection-start-line="98" selection-start-column="45" selection-end-line="98" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
