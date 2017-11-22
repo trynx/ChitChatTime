@@ -48,9 +48,10 @@ public class MyClientReal {
                 int ageReg = userInputScn.nextInt();
                 // Inserting data to Register
                 // TODO - Make this method work once Register , LogIn class work as necessary
+                String [] userArray = register.regUser(String usernameReg, String passwordReg, int ageReg);
                 // register.registerMethod(usernameReg, passwordReg, ageReg);
                 // Send the data to DBManager
-                dbManager.registerServer(usernameReg,passwordReg,ageReg);
+                dbManager.registerServer(userArray);
             } // - Client registration end -
             else dbManager.clientInput(userInputScn.next());
 
