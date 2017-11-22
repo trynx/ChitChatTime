@@ -5,9 +5,12 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.UUID;
 
-public class JDBC {
 
-    // - Singleton Start -
+class JDBC {
+
+    /**
+     * Singleton Start
+     */
     private static JDBC instance;
 
     // Private Constructor - to prevent instantiation from outside
@@ -19,32 +22,37 @@ public class JDBC {
         if (instance == null) instance = new JDBC();
         return instance;
     }
-    // - Singleton End -
+    /**
+     * Singleton End
+     */
 
-    // - JDBC Start -
+    RandomString randomString = new RandomString(); // Test
+    Session session = new Session();
+
     // TODO - Change to a class (?)
 
     // TODO - Make a Database user [bad practice to use root]
-    static String dbName = "chitchattime";
-    static String user = "root";
-    static String dbPassword = "";
-    static int port = 3306;
-    static String url = "jdbc:mysql://127.0.0.1:" + port + "/" + dbName;
+    private static String dbName = "chitchattime";
+    private static String user = "root";
+    private static String dbPassword = "";
+    private static int port = 3306;
+    private static String url = "jdbc:mysql://127.0.0.1:" + port + "/" + dbName;
 
-    // -- Registration method Start --
-     String jdbcRegister(String username, String password, int age) {
+    /**
+     * Registration Start
+     */
+    String jdbcRegister(String username, String password, int age) {
 
         try {
             Connection db = DriverManager.getConnection(url, user, dbPassword);
             // SQL Prepare statement
-            // TODO - Array of Prepare statement
             PreparedStatement stmt;
 
             String chkUsername = "SELECT name FROM users;";
             stmt = db.prepareStatement(chkUsername);
             ResultSet resultSet = stmt.executeQuery();
 
-            while (resultSet.next()){
+            if (resultSet.next()){
                 System.out.println(resultSet.getString( 1));
 
                 // Checks if the user is already registered in the database
@@ -68,7 +76,7 @@ public class JDBC {
                     stmt.executeUpdate();
 
                     System.out.println("Successfully registered \nWelcome to Chit Chat !");
-                    return "Successfully registered \nWelcome to Chit Chat !";
+                    return "Successfully registered. Welcome to Chit Chat !";
                 }
             }
 
@@ -77,9 +85,13 @@ public class JDBC {
         }
         return "Nothing happened :(";
     }
-    // -- Registration method End --
+    /**
+     * Registration End
+     */
 
-    // -- Login method Start --
+    /**
+     * Login Start
+     */
     String jdbcLogin(String username, String password) {
 
         try {
@@ -87,48 +99,40 @@ public class JDBC {
             // SQL Prepare statement
 
             PreparedStatement stmt;
-            // Preparing for check username and password
+            // Preparing to verify username and password
             String chkUsername = "SELECT * FROM users;";
             stmt = db.prepareStatement(chkUsername);
             ResultSet resultSet = stmt.executeQuery();
 
-            // Index the name and password column
-            int nameIndex   = resultSet.findColumn("name");
-            int passwordIndex   = resultSet.findColumn("password");
 
-            // Check of username and password
-            for(resultSet.first();!resultSet.isLast();resultSet.next()){
+            // Verification of username and password
+            for(resultSet.first();!resultSet.isAfterLast();resultSet.next()){
 
                 if(resultSet.getString("name").equalsIgnoreCase(username) && resultSet.getString("password").equals(password)){
-                    return "Welcome " + username;
+                    session.createSession(username);
+                    String userSession = session.getCurrentSession();
+                    session.encodeSession(userSession);
+                    String userEncodedS = session.getEncodedSession();
+                    System.out.println("userEncodedS : " + userEncodedS);
+                    System.out.println("userSession : " + userSession);
+                    return "Welcome " + userEncodedS ; // TODO - Find a way to send to the user without the client actually see it
 
                 }
-                System.out.println(resultSet.getString("name"));
-                System.out.println(resultSet.getString("password"));
 
-           }
-
+            }
+            return "Wrong username or password";
 
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return "Didn't work";
+        return "Login didn't work";
     }
-    // -- Registration method End --
-
-    // The encryption for token
-    // Use Hashing with MD5
-    // TODO - Add a better method for encryption
-    private String tokenToDo(String toToken){
+    /**
+     * Login End
+     */
 
 
-           // MessageDigest md = MessageDigest.getInstance("MD5");
-
-
-
-        return "";
-    }
 
     /* -- Mini Dummy to test registration --
     public static void jdbcRegister(String userInfo, int counter) {

@@ -3,9 +3,9 @@ import java.util.Scanner;
 // This is the client , which will do all the operations and chatting
 public class MyClientReal {
 
-    // TODO - Maybe there is a better way ?
-    static boolean connected = true;
-
+    // TODO - Session and keep it saved in the client
+    // TODO - Make a method that each outpuststream have the seassion + username together for verification in the server
+    // TODO - Method for chat , once a user is added , it will saved it until the client decide to end the chat
     public static void main(String [] args){
 
         DBManager dbManager = DBManager.getInstance();
@@ -20,12 +20,12 @@ public class MyClientReal {
         // Register ,Login ,Logout or Check
 
         // Loop forever for client message
-        while(connected){
+        while(true){
             System.out.print("~ ");
             // userSC save user input and do validation in the IF control flow
             String userSC = userInputScn.next();
 
-            // - Client login start -
+            // - Client login Start -
             if(userSC.equalsIgnoreCase("login")){
                 System.out.println("Username: ");
                 String usernameLog = userInputScn.next();
@@ -34,25 +34,38 @@ public class MyClientReal {
                 // Send the data to DBManager
                 dbManager.loginServer(usernameLog,passwordLog);
 
-            }// - Client login end -
+            }// - Client login End -
 
-            // - Client registration start -
-           else if(userSC.equalsIgnoreCase("register")){
+            // - Client registration Start -
+            else if(userSC.equalsIgnoreCase("register")){
 
-                // Update after testing to Get/Set for Register Class
+                // Input user information from client
                 System.out.println("Username: ");
                 String usernameReg = userInputScn.next();
                 System.out.println("Password: ");
                 String passwordReg = userInputScn.next();
                 System.out.println("Age: ");
                 int ageReg = userInputScn.nextInt();
-                // Inserting data to Register
-                // TODO - Make this method work once Register , LogIn class work as necessary
-                String [] userArray = register.regUser(String usernameReg, String passwordReg, int ageReg);
-                // register.registerMethod(usernameReg, passwordReg, ageReg);
-                // Send the data to DBManager
-                dbManager.registerServer(userArray);
-            } // - Client registration end -
+
+                // Insert user information to Register
+                register.regUser(usernameReg,passwordReg,ageReg);
+
+                // Declare the user information again from the class Register
+                usernameReg = register.getUsernameReg();
+                passwordReg = register.getPasswordReg();
+                ageReg = register.getAgeReg();
+
+                // Send the user information to DBManager
+                dbManager.registerServer(usernameReg,passwordReg,ageReg);
+            } // - Client registration End -
+
+            // - Client logout Start -
+            else if(userSC.equalsIgnoreCase("logout")) {
+                // Break the loop of while , then the scanner will stop working and stop the client
+                break;
+
+            } // - Client logout End -
+
             else dbManager.clientInput(userInputScn.next());
 
         }

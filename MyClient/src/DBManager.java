@@ -12,7 +12,9 @@ import java.sql.SQLException;
  */
 class DBManager {
 
-    // - Singleton Start -
+    /**
+     * Singleton Start
+     */
     private static DBManager instance;
 
     // Private Constructor - to prevent instantiation from outside
@@ -24,11 +26,16 @@ class DBManager {
         if (instance == null) instance = new DBManager();
         return instance;
     }
-    // - Singleton End -
+    /**
+     * Singleton End
+     */
 
 
-    // - Connection to Server Start -
+    /**
+     * Connection to server Start
+     */
     private  Socket socket;
+    private boolean logged; // Test for when logged in
 
     // Rest of code for DB Manager
 
@@ -71,6 +78,8 @@ class DBManager {
             InputStreamReader isrObj = new InputStreamReader(isObj);
             BufferedReader brObj = new BufferedReader(isrObj);
             String clientNumber = brObj.readLine();
+            // TODO - Maybe do multiple option with switch , as later on it will come with JSON and would need to "clean" that
+            // Switch - Logged , Chat , Registered
             System.out.println("Message received from server " + clientNumber);
 
         } catch (Exception e) {
@@ -85,7 +94,9 @@ class DBManager {
         }
     }
 
-    // - Connection to Server End -
+    /**
+     * Connection to server End
+     */
 
 
     // - Client Entry Response Start -
@@ -103,12 +114,11 @@ class DBManager {
                 break;
             case "check":
                 System.out.println("Connecting to the server ... ");
-               this.serverConnect("check");
+                this.serverConnect("check");
                 break;
             case "logout":
                 System.out.println("Disconnect from chat.\n");
                 this.serverConnect("logout");
-                MyClientReal.connected = false;
                 break;
             default:
                 System.out.println("Please try again \nType register or login");

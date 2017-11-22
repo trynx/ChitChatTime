@@ -6,27 +6,28 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+
+// TODO - Method to generate session & add to DB (only does when login)
+// TODO - Method for chat , gets the name whom the client wants to chat, verify the receiver name with the session
 public class DBManager {
 
     // Here the DBManagerServer will receive the commands from the DBManagerClient and execute them
     // This way is done so the Client doesn't know what exactly is being done
 
-    static private Register reg = Register.getInstance();
-    static private LogInOut login = LogInOut.getInstance();
-    static private JDBC jdbc = JDBC.getInstance();
+    private static  Register reg = Register.getInstance();
+    private static  LogInOut login = LogInOut.getInstance();
+    private static  JDBC jdbc = JDBC.getInstance();
     private static Socket socket;
     private static boolean onReg = false;
     private static boolean onLog = false;
 
-    // Start of main test -- DELETE LATER
+    /**
+     * Start main
+     */
     public static void main(String [] args) {
         // Rest of code for DB Manager
-        // TODO - Prepare Statement (need to separate in chunks depends which class? )
-        // Should make different method depend onReg which prepare statement of which function the program should execute
+
         // TODO - JSON Parse - For chatting text from Chat class
-        // TODO - JDBC - Connecting from Login/out class & Register class
-
-
 
         try {
             // Declare port
@@ -38,6 +39,7 @@ public class DBManager {
 
             // Server is always running
             while (true) {
+
                 // Setting up the server
                 // Read data from client
                 socket = serverSocket.accept();
@@ -68,20 +70,21 @@ public class DBManager {
             } // End of while loop
         }
         catch(Exception e){
+            e.printStackTrace();
+        }
+        finally{
+            try {
+                // Server socket closed
+                socket.close();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        finally{
-                try {
-                    // Server socket closed
-                    socket.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        }
         //}
     }
-    // - End of test main -
-
+    /**
+     * End main
+     */
 
 
 
@@ -94,9 +97,13 @@ public class DBManager {
 
     private static String switchY(String switchy){
 
+        // - Chat Phase -
+        if (false) {
 
-        // Login Phase
-        if(switchy.equalsIgnoreCase("login") || onLog){
+        }
+
+        // - Login Phase -
+        else if(switchy.equalsIgnoreCase("login") || onLog){
             if (onLog){
                 switch(counterLog) {
                     case 0:
@@ -114,7 +121,7 @@ public class DBManager {
             return "In login";
         }
 
-        // Registration Phase
+        // - Registration Phase -
         // Gets each information from the client in order User , Password and Age
         // Then add it depend onReg the counterReg
         else if(switchy.equalsIgnoreCase("register") || onReg) {
