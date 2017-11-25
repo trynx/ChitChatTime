@@ -36,7 +36,7 @@ class DBManager {
      */
     private  Socket socket;
     private boolean logged; // Test for when logged in
-
+    Login login = Login.getInstance();
     // Rest of code for DB Manager
 
 
@@ -78,10 +78,23 @@ class DBManager {
             InputStreamReader isrObj = new InputStreamReader(isObj);
             BufferedReader brObj = new BufferedReader(isrObj);
             String clientNumber = brObj.readLine();
+
             // TODO - Maybe do multiple option with switch , as later on it will come with JSON and would need to "clean" that
             // Switch - Logged , Chat , Registered
             // TODO - ** Continue here **
-            System.out.println("Message received from server " + clientNumber);
+            if(clientNumber.startsWith(login.getUserName())){
+                // Split the session at ":" , so the userName and token can be extract
+                String [] sessionArray = clientNumber.split(":");  // [0] = userName , [1] = token
+                String userName = sessionArray[0];
+                String token = sessionArray[1];
+
+               login.setSessionUser(token);
+
+               System.out.println("Welcome " + userName);
+            } else {
+                System.out.println("Message received from server " + clientNumber);
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();

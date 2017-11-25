@@ -1,3 +1,5 @@
+
+
 import java.util.Base64;
 
 class Session {
@@ -23,6 +25,13 @@ class Session {
 
         setEncodedSession(new String(encodedBytes));
 
+    }
+
+    String decodeSession(String encoded){
+
+        byte [] decoded = Base64.getDecoder().decode(encoded);
+
+        return new String(decoded);
     }
 
     // Setters

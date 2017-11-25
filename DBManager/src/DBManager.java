@@ -18,6 +18,7 @@ public class DBManager {
     private static  LogInOut login = LogInOut.getInstance();
     private static  JDBC jdbc = JDBC.getInstance();
     private static Socket socket;
+    private static ServerSocket serverSocket;
     private static boolean onReg = false;
     private static boolean onLog = false;
 
@@ -94,7 +95,7 @@ public class DBManager {
 
     private static int counterReg = 0; // Counter for Registration switch
     private static int counterLog = 0; // Counter for Registration switch
-
+    private static boolean loggedIn = false;
     private static String switchY(String switchy){
 
         // - Chat Phase -
@@ -114,7 +115,8 @@ public class DBManager {
                         login.setPassword(switchy);
                         counterLog = 0;
                         onLog = false;
-                        return jdbc.jdbcLogin(login.getUsername(),login.getPassword());
+                        loggedIn = true;
+                        return jdbc.jdbcLogin(login.getUsername(),login.getPassword(),jdbc.chkUserLogged(login.getUsername()));
                 }
             }
             onLog = true;

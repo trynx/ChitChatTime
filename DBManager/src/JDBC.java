@@ -27,7 +27,8 @@ class JDBC {
      */
 
     RandomString randomString = new RandomString(); // Test
-    Session session = new Session();
+    private Session session = new Session();
+
 
     // TODO - Change to a class (?)
 
@@ -92,42 +93,48 @@ class JDBC {
     /**
      * Login Start
      */
-    String jdbcLogin(String username, String password) {
+    String jdbcLogin(String username, String password,boolean isHere) {
 
-        try {
-            Connection db = DriverManager.getConnection(url, user, dbPassword);
-            // SQL Prepare statement
+        if(!isHere) {
+            try {
+                Connection db = DriverManager.getConnection(url, user, dbPassword);
+                // SQL Prepare statement
 
-            PreparedStatement stmt;
-            // Preparing to verify username and password
-            String chkUsername = "SELECT * FROM users;";
-            stmt = db.prepareStatement(chkUsername);
-            ResultSet resultSet = stmt.executeQuery();
+                PreparedStatement stmt;
+                // Preparing to verify username and password
+                String chkUsername = "SELECT * FROM users;";
+                stmt = db.prepareStatement(chkUsername);
+                ResultSet resultSet = stmt.executeQuery();
 
 
-            // Verification of username and password
-            for(resultSet.first();!resultSet.isAfterLast();resultSet.next()){
+                // Verification of username and password
+                for (resultSet.first(); !resultSet.isAfterLast(); resultSet.next()) {
 
-                if(resultSet.getString("name").equalsIgnoreCase(username) && resultSet.getString("password").equals(password)){
-                    session.createSession(username);
-                    String userSession = session.getCurrentSession();
+                    if (resultSet.getString("name").equalsIgnoreCase(username) && resultSet.getString("password").equals(password)) {
+                        session.createSession(username);
+                        String userSession = session.getCurrentSession();
 
-                    jdbcSessions(userSession);
+                        jdbcSessions(userSession,isHere);
 
-                    session.encodeSession(userSession);
-                    String userEncodedS = session.getEncodedSession();
-                    System.out.println("userEncodedS : " + userEncodedS);
-                    System.out.println("userSession : " + userSession);
-                    return "Welcome " + userEncodedS ; // TODO - Find a way to send to the user without the client actually see it
+                        session.encodeSession(userSession);
+                        String userEncodedS = session.getEncodedSession();
+                        // Checks , delete later
+                        System.out.println("userEncodedS : " + userEncodedS);
+                        System.out.println("userSession : " + userSession);
+
+                        return username + ":" + userEncodedS; // TODO - Find a way to send to the user without the client actually see it
+
+                    }
 
                 }
+                return "Wrong username or password";
 
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
-            return "Wrong username or password";
-
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } else if(isHere){
+            return "User : " + username + " is already logged in";
         }
         return "Login didn't work";
     }
@@ -139,10 +146,10 @@ class JDBC {
     /**
      * Session Start
      */
-    private void jdbcSessions(String session){
+    private void jdbcSessions(String session, boolean isHere) {
 
         // Split the session at ":" , so the userName and token can be extract
-        String [] sessionArray = session.split(":");  // [0] = userName , [1] = token
+        String[] sessionArray = session.split(":");  // [0] = userName , [1] = token
         String userName = sessionArray[0];
         String token = sessionArray[1];
 
@@ -155,25 +162,14 @@ class JDBC {
             // Does a table where the userName show its ID
             String sessionTable = "SELECT id,name FROM users WHERE name=(?)";
             stmt = db.prepareStatement(sessionTable);
-            stmt.setString(1,userName);
-
+            stmt.setString(1, userName);
             ResultSet resultSet = stmt.executeQuery();
-
-            if(resultSet.next()){
-                // Extract ID from the table where the user name is
+            // Extract ID from the table where the user name is
+            if (resultSet.next()) {
                 int userId = resultSet.getInt("id");
 
-                // Preparing to verify user_id
-                String chkUsername = "SELECT * FROM sessions;";
-                stmt = db.prepareStatement(chkUsername);
-                ResultSet resultSetSession = stmt.executeQuery();
-
-
-                // Verification of username and password
-                for(resultSetSession.first();!resultSetSession.isAfterLast();resultSetSession.next()) {
-
-                    if (resultSetSession.getInt("user_id") == userId) {
-
+                // When the user_id doesn't exist in Sessions table , will insert it to Sessions
+                if (!isHere) {
                     // Add the user_id & token to the sessions table
                     // TODO - Check how to get owns address (realllyy at the end of the project :P )
                     String addSession = "INSERT INTO sessions (user_id, token, remote_addr) VALUE (?,?,'TBA')";
@@ -181,16 +177,70 @@ class JDBC {
                     stmt.setInt(1, userId);
                     stmt.setString(2, token);
                     stmt.executeUpdate();
-                    }
                 }
             }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
         /**
          * Session Start
          */
+
+        /**
+         * CheckUserLogged Start
+         */
+        // Method will do a check on session table if the user already logged
+        // If already logged , will return true , if not will return false
+        boolean chkUserLogged(String userName){
+
+            try {
+                Connection db = DriverManager.getConnection(url, user, dbPassword);
+                // SQL Prepare statement
+
+                PreparedStatement stmt;
+                // Does a table where the userName show its ID
+                String sessionTable = "SELECT id,name FROM users WHERE name=(?)";
+                stmt = db.prepareStatement(sessionTable);
+                stmt.setString(1, userName);
+
+                ResultSet resultSet = stmt.executeQuery();
+
+                if (resultSet.next()) {
+                    // Extract ID from the table where the user name is
+                    int userId = resultSet.getInt("id");
+
+                    // Preparing to verify user_id
+                    String chkUsername = "SELECT * FROM sessions;";
+                    stmt = db.prepareStatement(chkUsername);
+                    ResultSet resultSetSession = stmt.executeQuery();
+
+
+                    if (resultSetSession.next()) {
+
+                        // Verification of username and password
+                        for (resultSetSession.first(); !resultSetSession.isAfterLast(); resultSetSession.next()) {
+
+                            // When the loop finds an user_id that is compatible with the user_id in Sessions table
+                            if (resultSetSession.getInt("user_id") == userId) {
+                                // Means the user is already logged in
+                                return true;
+                            }
+                        }
+                    }
+
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            // Not logged in
+            return false;
+    }
+    /**
+     * CheckUserLogged Start
+     */
 
     }
 
@@ -216,4 +266,4 @@ class JDBC {
     }
     *///  -- End of Mini Dummy --
 
-}
+

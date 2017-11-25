@@ -10,6 +10,7 @@ public class MyClientReal {
 
         DBManager dbManager = DBManager.getInstance();
         Scanner userInputScn = new Scanner(System.in);
+        Login login = Login.getInstance();
 
         // TODO - Think not the best way , need to check for a better one later
         Register register = new Register();
@@ -28,11 +29,11 @@ public class MyClientReal {
             // - Client login Start -
             if(userSC.equalsIgnoreCase("login")){
                 System.out.println("Username: ");
-                String usernameLog = userInputScn.next();
+                login.setUserName(userInputScn.next());
                 System.out.println("Password: ");
-                String passwordLog = userInputScn.next();
+                login.setPassword(userInputScn.next());
                 // Send the data to DBManager
-                dbManager.loginServer(usernameLog,passwordLog);
+                dbManager.loginServer(login.getUserName(),login.getPassword());
 
             }// - Client login End -
 
