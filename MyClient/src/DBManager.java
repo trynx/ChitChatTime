@@ -80,6 +80,7 @@ class DBManager {
             String clientNumber = brObj.readLine();
             // TODO - Maybe do multiple option with switch , as later on it will come with JSON and would need to "clean" that
             // Switch - Logged , Chat , Registered
+            // TODO - ** Continue here **
             System.out.println("Message received from server " + clientNumber);
 
         } catch (Exception e) {

@@ -53,12 +53,12 @@ class JDBC {
             ResultSet resultSet = stmt.executeQuery();
 
             if (resultSet.next()){
-                System.out.println(resultSet.getString( 1));
+                System.out.println(resultSet.getString( "name"));
 
                 // Checks if the user is already registered in the database
                 // if yes , will send message to user about it
                 // if no , will continue with the registration
-                if(resultSet.getString(1).equalsIgnoreCase(username)){
+                if(resultSet.getString("name").equalsIgnoreCase(username)){
                     System.out.println("This username is taken , please try a new one");
                     return "This username is taken , please try a new one";
 
@@ -111,6 +111,9 @@ class JDBC {
                 if(resultSet.getString("name").equalsIgnoreCase(username) && resultSet.getString("password").equals(password)){
                     session.createSession(username);
                     String userSession = session.getCurrentSession();
+
+                    jdbcSessions(userSession);
+
                     session.encodeSession(userSession);
                     String userEncodedS = session.getEncodedSession();
                     System.out.println("userEncodedS : " + userEncodedS);
@@ -133,6 +136,63 @@ class JDBC {
      */
 
 
+    /**
+     * Session Start
+     */
+    private void jdbcSessions(String session){
+
+        // Split the session at ":" , so the userName and token can be extract
+        String [] sessionArray = session.split(":");  // [0] = userName , [1] = token
+        String userName = sessionArray[0];
+        String token = sessionArray[1];
+
+
+        try {
+            Connection db = DriverManager.getConnection(url, user, dbPassword);
+            // SQL Prepare statement
+
+            PreparedStatement stmt;
+            // Does a table where the userName show its ID
+            String sessionTable = "SELECT id,name FROM users WHERE name=(?)";
+            stmt = db.prepareStatement(sessionTable);
+            stmt.setString(1,userName);
+
+            ResultSet resultSet = stmt.executeQuery();
+
+            if(resultSet.next()){
+                // Extract ID from the table where the user name is
+                int userId = resultSet.getInt("id");
+
+                // Preparing to verify user_id
+                String chkUsername = "SELECT * FROM sessions;";
+                stmt = db.prepareStatement(chkUsername);
+                ResultSet resultSetSession = stmt.executeQuery();
+
+
+                // Verification of username and password
+                for(resultSetSession.first();!resultSetSession.isAfterLast();resultSetSession.next()) {
+
+                    if (resultSetSession.getInt("user_id") == userId) {
+
+                    // Add the user_id & token to the sessions table
+                    // TODO - Check how to get owns address (realllyy at the end of the project :P )
+                    String addSession = "INSERT INTO sessions (user_id, token, remote_addr) VALUE (?,?,'TBA')";
+                    stmt = db.prepareStatement(addSession);
+                    stmt.setInt(1, userId);
+                    stmt.setString(2, token);
+                    stmt.executeUpdate();
+                    }
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        /**
+         * Session Start
+         */
+
+    }
 
     /* -- Mini Dummy to test registration --
     public static void jdbcRegister(String userInfo, int counter) {

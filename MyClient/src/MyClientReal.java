@@ -14,7 +14,7 @@ public class MyClientReal {
         // TODO - Think not the best way , need to check for a better one later
         Register register = new Register();
 
-        System.out.println("Welcome to Chit Chat Time \nWould you like to register ,login or check?");
+        System.out.println("Welcome to Chit Chat Time \nWould you like to register or login?");
 
         // Checking which operation the user wants
         // Register ,Login ,Logout or Check
@@ -66,7 +66,12 @@ public class MyClientReal {
 
             } // - Client logout End -
 
-            else dbManager.clientInput(userInputScn.next());
+            else if(userSC.equalsIgnoreCase("chat")) {
+
+            }
+
+           // Nothing was selected
+           else{ System.out.println("Try again");}
 
         }
 
