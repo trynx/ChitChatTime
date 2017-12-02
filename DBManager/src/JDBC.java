@@ -33,11 +33,11 @@ class JDBC {
     // TODO - Change to a class (?)
 
     // TODO - Make a Database user [bad practice to use root]
-    private static String dbName = "chitchattime";
-    private static String user = "root";
-    private static String dbPassword = "";
+    private static String dbName = "ibmx_2c65d51c6a8f71f";
+    private static String user = "b6ba4ce7856911";
+    private static String dbPassword = "32e2b73a";
     private static int port = 3306;
-    private static String url = "jdbc:mysql://127.0.0.1:" + port + "/" + dbName;
+    private static String url = "jdbc:mysql://eu-cdbr-sl-lhr-01.cleardb.net/" + dbName;
 
     /**
      * Registration Start
@@ -45,6 +45,7 @@ class JDBC {
     String jdbcRegister(String username, String password, int age) {
 
         try {
+            System.out.println("Register");
             Connection db = DriverManager.getConnection(url, user, dbPassword);
             // SQL Prepare statement
             PreparedStatement stmt;

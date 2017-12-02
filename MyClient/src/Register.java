@@ -10,9 +10,9 @@ class Register {
             setUsernameReg(username);
             setPasswordReg(password);
             setAgeReg(age);
+        } else {
+            System.out.println("Username, password or age are unable \nTry again");
         }
-        System.out.println("Username, password or age are unable \nTry again");
-
     }
 
 
