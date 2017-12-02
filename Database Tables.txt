@@ -1,4 +1,6 @@
+Connect with shell : mysql -u b6ba4ce7856911 -p32e2b73a(PASSWORD WITHOUT SPACE) -h eu-cdbr-sl-lhr-01.cleardb.net(HOSTNAME) ibmx_2c65d51c6a8f71f(DATABASE NAME)
 
+mysql -u b6ba4ce7856911 -p32e2b73a -h eu-cdbr-sl-lhr-01.cleardb.net ibmx_2c65d51c6a8f71f
 users :
 
 CREATE TABLE users(
