@@ -27,11 +27,17 @@ class Session {
 
     }
 
+    // Decoding the session with Base64
     String decodeSession(String encoded){
 
         byte [] decoded = Base64.getDecoder().decode(encoded);
 
         return new String(decoded);
+    }
+
+    // Delete session of selected user_id
+    void deleteSession(int userId){
+
     }
 
     // Setters

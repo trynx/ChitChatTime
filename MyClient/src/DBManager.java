@@ -51,13 +51,29 @@ class DBManager {
             osObj = new PrintStream(clientSocket.getOutputStream());
             brObj = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String responseLine;
+            // Login Loop - Maybe better way .. ?
             while ((responseLine = brObj.readLine()) != null) {
                 responseServer = responseLine;
 
-                if (responseLine.contains("/quit"))
+                // Check for the user name is logged.
+                // login.getUserName is empty until the client login.
+                if (!logged && responseServer.startsWith(login.getUserName()) && !login.getUserName().isEmpty()){
+                    System.out.println("In logged");
+                    // Split the session at ":" , so the userName and token can be extract
+                    String [] sessionArray = responseServer.split(":");  // [0] = userName , [1] = token
+                    String userName = sessionArray[0];
+                    String token = sessionArray[1];
+
+                    login.setSessionUser(token);
+                    System.out.println("Welcome " + userName + "\nTo logout the chat type /quit");
+                    logged = true;
                     break;
+                }
+
+                System.out.println(responseServer);
+
+                if(responseLine.startsWith("/quit")) break;
             }
-            logged = true;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,33 +114,6 @@ class DBManager {
      */
 
 
-    // - Client Entry Response Start -
-    void clientInput(String clientInputMsg){
-        // Check which input , and execute that input
-        // Register , Login or Check
-        switch (clientInputMsg.toLowerCase()){
-            case "register":
-
-                break;
-            case "login":
-                // Login class
-                System.out.println("login\n");
-                this.serverConnect("login");
-                break;
-            case "check":
-                System.out.println("Connecting to the server ... ");
-                this.serverConnect("check");
-                break;
-            case "logout":
-                System.out.println("Disconnect from chat.\n");
-                this.serverConnect("logout");
-                break;
-            default:
-                System.out.println("Please try again \nType register or login");
-
-        }
-    }
-    // - Client Entry Response End -
 
     // Register information
     void registerServer(String username, String password, int age){
@@ -134,6 +123,15 @@ class DBManager {
     // Login information
     void loginServer(String username, String password){
         this.serverConnect("login:"+ username + ":" + password);
+    }
+
+    // Chat
+    void chatServer(String userInput){
+        this.serverConnect(userInput);
+    }
+
+    void logout(String userInput){
+        this.serverConnect(userInput);
     }
 
 }

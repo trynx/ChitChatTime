@@ -21,7 +21,7 @@ public class DBManager {
     private static JDBC jdbc = JDBC.getInstance();
     private static Socket clientSocket;
     private static ServerSocket serverSocket;
-    private static final int maxClientNum = 5;
+    private static final int maxClientNum = 2;
     private static final ServerThread[] thread = new ServerThread[maxClientNum];
     private static boolean onReg = false;
     private static boolean onLog = false;
@@ -53,8 +53,9 @@ public class DBManager {
                 int i;
                 for (i = 0; i < maxClientNum; i++) {
                     if (thread[i] == null) {
-                        System.out.println("Bingo");
                         (thread[i] = new ServerThread(clientSocket, thread)).start();
+                        System.out.println("Bingo" + ServerThread.currentThread());
+                        System.out.println(ServerThread.activeCount());
                         break;
                     }
                 }

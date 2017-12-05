@@ -32,12 +32,12 @@ class JDBC {
 
     // TODO - Change to a class (?)
 
-    // TODO - Make a Database user [bad practice to use root]
     private static String dbName = "ibmx_2c65d51c6a8f71f";
     private static String user = "b6ba4ce7856911";
     private static String dbPassword = "32e2b73a";
-    private static int port = 3306;
-    private static String url = "jdbc:mysql://eu-cdbr-sl-lhr-01.cleardb.net/" + dbName;
+    private static int port ;
+    private static String hostName = "eu-cdbr-sl-lhr-01.cleardb.net";
+    private static String url = "jdbc:mysql://" + hostName +"/" + dbName;
 
     /**
      * Registration Start
@@ -45,7 +45,7 @@ class JDBC {
     String jdbcRegister(String username, String password, int age) {
 
         try {
-            System.out.println("Register");
+            System.out.println("Registering");
             Connection db = DriverManager.getConnection(url, user, dbPassword);
             // SQL Prepare statement
             PreparedStatement stmt;
@@ -54,33 +54,27 @@ class JDBC {
             stmt = db.prepareStatement(chkUsername);
             ResultSet resultSet = stmt.executeQuery();
 
-            if (resultSet.next()){
-                System.out.println(resultSet.getString( "name"));
+            // Checks if the user is already registered in the database
+            // if yes , will send message to user about it
+            // if no , will continue with the registration
+            for(resultSet.first(); !resultSet.isAfterLast() && resultSet.wasNull() ; resultSet.next()){
+                System.out.println(resultSet.getString( "name")); // Check
+                if(resultSet.getString("name").equals(username))
 
-                // Checks if the user is already registered in the database
-                // if yes , will send message to user about it
-                // if no , will continue with the registration
-                if(resultSet.getString("name").equalsIgnoreCase(username)){
-                    System.out.println("This username is taken , please try a new one");
-                    return "This username is taken , please try a new one";
-
-                } else {
-
-                    // Prepare Statement for register an user in the table 'users'
-                    String prestmt = "INSERT INTO users (name, password, age) VALUES (?, ?, ?)";
-                    stmt = db.prepareStatement(prestmt);
-
-
-                    // Insert user info
-                    stmt.setString(1, username);
-                    stmt.setString(2, password);
-                    stmt.setInt(3, age);
-                    stmt.executeUpdate();
-
-                    System.out.println("Successfully registered \nWelcome to Chit Chat !");
-                    return "Successfully registered. Welcome to Chit Chat !";
-                }
+                    return "User name already taken , try another user name" ;
             }
+
+                // Prepare Statement for register an user in the table 'users'
+                String prestmt = "INSERT INTO users (name, password, age) VALUES (?, ?, ?)";
+                stmt = db.prepareStatement(prestmt);
+                // Insert user info
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                stmt.setInt(3, age);
+                stmt.executeUpdate();
+                System.out.println("Successfully registered.");
+                 db.close();
+                return "Successfully registered. Please login";
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -96,7 +90,7 @@ class JDBC {
      */
     String jdbcLogin(String username, String password,boolean isHere) {
 
-        if(!isHere) {
+        if(isHere) {
             try {
                 Connection db = DriverManager.getConnection(url, user, dbPassword);
                 // SQL Prepare statement
@@ -122,19 +116,20 @@ class JDBC {
                         // Checks , delete later
                         System.out.println("userEncodedS : " + userEncodedS);
                         System.out.println("userSession : " + userSession);
-
+                        db.close();
                         return username + ":" + userEncodedS; // TODO - Find a way to send to the user without the client actually see it
 
                     }
 
                 }
+                db.close();
                 return "Wrong username or password";
 
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-        } else if(isHere){
+        } else {
             return "User : " + username + " is already logged in";
         }
         return "Login didn't work";
@@ -147,7 +142,7 @@ class JDBC {
     /**
      * Session Start
      */
-    private void jdbcSessions(String session, boolean isHere) {
+    private void jdbcSessions(String session, boolean notHere) {
 
         // Split the session at ":" , so the userName and token can be extract
         String[] sessionArray = session.split(":");  // [0] = userName , [1] = token
@@ -170,7 +165,7 @@ class JDBC {
                 int userId = resultSet.getInt("id");
 
                 // When the user_id doesn't exist in Sessions table , will insert it to Sessions
-                if (!isHere) {
+                if (notHere) {
                     // Add the user_id & token to the sessions table
                     // TODO - Check how to get owns address (realllyy at the end of the project :P )
                     String addSession = "INSERT INTO sessions (user_id, token, remote_addr) VALUE (?,?,'TBA')";
@@ -178,9 +173,10 @@ class JDBC {
                     stmt.setInt(1, userId);
                     stmt.setString(2, token);
                     stmt.executeUpdate();
+                    db.close();
                 }
             }
-
+            db.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -224,26 +220,71 @@ class JDBC {
                         for (resultSetSession.first(); !resultSetSession.isAfterLast(); resultSetSession.next()) {
 
                             // When the loop finds an user_id that is compatible with the user_id in Sessions table
-                            if (resultSetSession.getInt("user_id") == userId) {
+                            if (resultSetSession.getInt("user_id")== userId) {
                                 // Means the user is already logged in
-                                return true;
+                                db.close();
+                                return false;
                             }
                         }
                     }
 
                 }
+                db.close();
 
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
             // Not logged in
-            return false;
+            return true;
     }
     /**
      * CheckUserLogged Start
      */
 
+
+    /**
+     * Logout Start
+     */
+    void jdbcLogout(String username){
+
+        // Takes the user name which will logout and delete the session
+        // It's used to know that the user is no longer logged
+
+        try {
+            Connection db = DriverManager.getConnection(url, user, dbPassword);
+            // SQL Prepare statement
+
+            PreparedStatement stmt;
+            // Take the id from the right username which will logout
+            String logOutTable = "SELECT id,name FROM users WHERE name = ?";
+            stmt = db.prepareStatement(logOutTable);
+            stmt.setString(1,username);
+            ResultSet resultSet = stmt.executeQuery();
+
+            if (resultSet.next()) {
+                // Get the id from the selected user
+                int userId = resultSet.getInt("id");
+                //  Then delete it from the session table
+                logOutTable = "DELETE FROM sessions WHERE user_id = ?";
+                stmt = db.prepareStatement(logOutTable);
+                stmt.setInt(1,userId);
+                stmt.executeUpdate();
+
+                db.close();
+                System.out.println(username + " disconnected");
+
+            }
+            db.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
     }
+    /**
+     * Logout End
+     */
+
+}
 
     /* -- Mini Dummy to test registration --
     public static void jdbcRegister(String userInfo, int counter) {
