@@ -9,45 +9,67 @@ public class MyClientReal implements Runnable  {
 
     private static Socket clientSocket = null;
     private static DBManager dbManagerThread;
+
     private static boolean shutdown;
+    private static int portNumber;
+    private static String host = "localhost";
+
     public static void main(String [] args){
 
 //        DBManager dbManager = DBManager.getInstance();
         Scanner userInputScn = new Scanner(System.in);
         Login login = Login.getInstance();
         boolean isLogged = false;
-
+        boolean inServer = false;
+        String userSC = "";
         Register register = new Register();
 
-
-
         // Checking which operation the user wants
-        // Register ,Login ,Logout or Check
-        System.out.println("Welcome to Chit Chat Time \nWould you like to register or login?");
 
-//        new Thread(new MyClientReal()).start();
+        System.out.println("Welcome to Chit Chat Time \nWould you like to connect to a specific server? Yes/No");
+
+        while(!inServer) {
+
+            userSC = userInputScn.nextLine();
+            // Manual connection
+            if (userSC.equalsIgnoreCase("yes")){
+                System.out.println("Port number");
+                portNumber = userInputScn.nextInt();
+                System.out.println("Server IP");
+                host = userInputScn.nextLine();
+                new Thread(new MyClientReal()).start();
+                inServer = true;
+            }
+
+            // Default connection
+            else if (userSC.equalsIgnoreCase("no")){
+                // Set the port of the server
+                portNumber = 8900;
+                // Set the IP of the server host
+                host = "localhost";
+                new Thread(new MyClientReal()).start();
+                inServer = true;
+            }
+
+        }
+
 
 
         // Loop forever for client message
-            while (true) {
+        while (inServer) {
 
-                // userSC save user input and do validation in the IF control flow
-//                System.out.println("~ ");
-                String userSC = userInputScn.nextLine();
-                // Testing dbManager.serverConnect(userSC, clientSocket);
+            // userSC save user input and do validation in the IF control flow
+            userSC = userInputScn.nextLine();
+
             // - Client login Start -
-            if(userSC.equalsIgnoreCase("login") && !isLogged){
-                new Thread(new MyClientReal()).start(); // TODO - Fix later the delay
+            if (userSC.equalsIgnoreCase("login") && !isLogged) {
                 System.out.println("Username: ");
                 login.setUserName(userInputScn.nextLine());
                 System.out.println("Password: ");
                 login.setPassword(userInputScn.nextLine());
-
-
                 // Send the data to DBManager
-                dbManagerThread.loginServer(login.getUserName(),login.getPassword());
+                dbManagerThread.loginServer(login.getUserName(), login.getPassword());
                 isLogged = true;
-
             }// - Client login End -
 
             // - Client registration Start -
@@ -74,16 +96,18 @@ public class MyClientReal implements Runnable  {
 
             // - Client logout Start -
             else if(userSC.equalsIgnoreCase("/quit")) {
-                // Break the loop of while , then the scanner will stop working and stop the client
+                // Clean up , then the scanner will stop working and stop the client
                 dbManagerThread.logout(userSC);
                 isLogged = false;
+                inServer = false;
                 shutdown();
             } // - Client logout End -
 
-                else if(isLogged){
+            else if(isLogged){
+                // TODO - Continue from here - Chat
                 dbManagerThread.chatServer(userSC);
             }
-                else {
+            else {
                 System.out.println("Please either login or register");
             }
             }
@@ -93,15 +117,13 @@ public class MyClientReal implements Runnable  {
     @Override
     public void run() {
         // Open socket
-        // port
-        int portNumber = 8900;
-        String host = "localhost";
 
         try {
             clientSocket = new Socket(host, portNumber);
-            // osObj = new PrintStream(clientSocket.getOutputStream());
-            // brObj = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            System.out.println("Client connected at port " + portNumber);
+
+            System.out.println("Connected to server " + host + " " + portNumber + " ..." +
+                    "\nWould you like to register or login?");
+
         } catch (IOException e){
             e.printStackTrace();
             System.out.println("Unknown host or port");

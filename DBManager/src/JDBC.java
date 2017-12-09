@@ -114,8 +114,9 @@ class JDBC {
                         session.encodeSession(userSession);
                         String userEncodedS = session.getEncodedSession();
                         // Checks , delete later
-                        System.out.println("userEncodedS : " + userEncodedS);
-                        System.out.println("userSession : " + userSession);
+                        /*System.out.println("userEncodedS : " + userEncodedS);
+                        System.out.println("userSession : " + userSession);*/
+
                         db.close();
                         return username + ":" + userEncodedS; // TODO - Find a way to send to the user without the client actually see it
 
@@ -130,7 +131,7 @@ class JDBC {
                 ex.printStackTrace();
             }
         } else {
-            return "User : " + username + " is already logged in";
+            return "User is already logged in";
         }
         return "Login didn't work";
     }

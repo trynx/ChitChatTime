@@ -1,5 +1,8 @@
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -30,11 +33,20 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
+    // All server message to client
+    String msgLogin,msgRegister,msgChat;
+    // The client will split the msg at '.'
+    msgLogin = "Welcome to Chit Chat Time. To chat with someone do /@User, to find user type /who." +
+            "For logout do /quit or any additional help /help.";
+    msgRegister = "";
+    msgChat = "";
 
+        try{
         while (!shutdown) {
             int maxClientNum = this.maxClientNum;
             ServerThread[] thread = this.thread;
             String name = "";
+            JSONObject jServerMsg;
 
             try {
                 // Prepare all the I/O
@@ -43,65 +55,40 @@ public class ServerThread extends Thread {
                 brObj = new BufferedReader(isrObj);
                 osObj = new PrintStream(clientSocket.getOutputStream());
 
-                // Start of client server
 
-
-
-            /* Prep of user = My login
-            while (true) {
-
-                osObj.println("Enter your name dude");
-                name = brObj.readLine().trim();
-                if (name.indexOf('@') == -1) {
-                    break;
-                } else {
-                    osObj.println("The name shouldn't include '@'.");
-                }
-            }*/
-                // Start of client server
-
-                // TODO - Thread reset when sudden disconnect
-                // Welcome the new client
+                // Client login or registration
                 while (!onLog) {
                     String clientMsg = brObj.readLine();
+
                     String responseSwitchy = switchY(clientMsg);
 
+                    // Start Login
                     if (responseSwitchy.startsWith("login")) {
                         name = login.getUsername();
 
-                        osObj.println("Welcome " + name + ". Type /quit to leave");
+                        jServerMsg = new JSONObject().put("login", responseSwitchy.replace("login","").trim());
+
+                        osObj.println(jServerMsg);
+
                         synchronized (this) {
                             for (int i = 0; i < maxClientNum; i++) {
                                 if (thread[i] != null && thread[i] == this) {
-                                    System.out.println(ServerThread.currentThread());
-                                    System.out.println(ServerThread.activeCount());
                                     clientName = "@" + name;
                                     onLog = true;
                                     break;
                                 }
                             }
-
-                            for (int i = 0; i < maxClientNum; i++) {
-                                if (thread[i] != null && thread[i] != this) {
-                                    thread[i].osObj.println("** New user " + name + " entered **");
-                                }
-                            }
                         }
-                    } else if (responseSwitchy.startsWith("register")) {
+                    }
+                    // Start Register
+                    else if (responseSwitchy.startsWith("register")) {
                         name = reg.getUsername();
-                        osObj.println("The registration of " + name + " is completed. Please login");
-                        synchronized (this) {
-                            for (int i = 0; i < maxClientNum; i++) {
-                                if (thread[i] == this) {
-                                    System.out.println("left thread after registered " + ServerThread.currentThread());
-                                    System.out.println(ServerThread.activeCount());
-                                    thread[i] = null;
-                                    shutdown();
-                                }
-                            }
-                        }
 
-                    } else osObj.println("Please login or register.");
+                        jServerMsg = new JSONObject().put("register", name );
+                        osObj.println(jServerMsg);
+
+
+                    }
 
                 }
 
@@ -133,6 +120,25 @@ public class ServerThread extends Thread {
                     }
                     // Public message
                     else {
+                        // If message contains command
+                        if(line.startsWith("/")){
+
+                            // In case there is more than one back escape , it will send a message to client as a failed command
+                           line = line.substring(1);
+                           if (line.startsWith("/")){
+                               synchronized (this) {
+                                   for (int i = 0; i < maxClientNum; i++) {
+                                       if (thread[i] != null && thread[i].clientName == null) {
+                                           thread[i].osObj.println("Not found such command");
+                                       }
+                                   }
+                               }
+                           }
+                           // If it's a legal command , will send to Command class
+                           else {
+
+                           }
+                        }
                         synchronized (this) {
                             for (int i = 0; i < maxClientNum; i++) {
                                 if (thread[i] != null && thread[i].clientName != null) {
@@ -177,9 +183,6 @@ public class ServerThread extends Thread {
                 synchronized (this) {
                     for (int i = 0; i < maxClientNum; i++) {
                         if (thread[i] == this) {
-
-                            System.out.println("Drop thread " + ServerThread.currentThread());
-                            System.out.println(ServerThread.activeCount());
                             thread[i] = null;
                             jdbc.jdbcLogout(name);
                             shutdown();
@@ -189,26 +192,34 @@ public class ServerThread extends Thread {
 
             }
 
-
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+            System.out.println("JSON exception");
         }
+
     }
 
 
     // Maybe to do a class for this , so it could be change onReg at live without dropping the server ?
     // TODO - Change to a proper name once it's more developed
     private String switchY(String switchy) {
+        try {
+            // Read JSON
+            JSONObject jClientReceived = new JSONObject(switchy);
+            System.out.println(jClientReceived.toString());
 
         // - Login Phase -
-        if (switchy.startsWith("login")) {
-            // Split the input at ":" , as the input comes login:username:password from the client
-            String[] loginArr = switchy.split(":", 0);
-            String userName = loginArr[1];
-            String password = loginArr[2];
+        if ((jClientReceived.toString().contains("login"))) {
+            // Get information from each node
+            String userName = jClientReceived.getJSONObject("login").getString("username");
+            String password = jClientReceived.getJSONObject("login").getString("password");
 
             login.setUsername(userName);
             login.setPassword(password);
-
-            return "login" + jdbc.jdbcLogin(login.getUsername(), login.getPassword(), jdbc.chkUserLogged(login.getUsername()));
+            System.out.println(userName + " " + password);
+            // return the key 'login' + the result from jdbcLogin
+            return "login " + jdbc.jdbcLogin(login.getUsername(), login.getPassword(), jdbc.chkUserLogged(login.getUsername()));
         }
 
         // - Registration Phase -
@@ -225,6 +236,10 @@ public class ServerThread extends Thread {
             reg.setAge(age);
 
             return "register" + jdbc.jdbcRegister(reg.getUsername(), reg.getPassword(), reg.getAge());
+        }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            System.out.println("JSON exception");
         }
 
         return "Not yet";

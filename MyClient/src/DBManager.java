@@ -1,5 +1,10 @@
 
 
+import netscape.javascript.JSObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -51,26 +56,29 @@ class DBManager {
             osObj = new PrintStream(clientSocket.getOutputStream());
             brObj = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String responseLine;
-            // Login Loop - Maybe better way .. ?
-            while ((responseLine = brObj.readLine()) != null) {
-                responseServer = responseLine;
+            JSONObject jServerReceive;
 
-                // Check for the user name is logged.
-                // login.getUserName is empty until the client login.
-                if (!logged && responseServer.startsWith(login.getUserName()) && !login.getUserName().isEmpty()){
-                    System.out.println("In logged");
-                    // Split the session at ":" , so the userName and token can be extract
-                    String [] sessionArray = responseServer.split(":");  // [0] = userName , [1] = token
+           // Read server stream all the time
+            while ((responseLine = brObj.readLine()) != null) {
+                jServerReceive = new JSONObject(responseLine);
+
+
+                if (jServerReceive.toString().contains("login")){
+
+                    // Split the session at ":" , so the userName and token can be extract from the JSON receive from server
+                    String [] sessionArray = jServerReceive.getString("login").split(":");  // [0] = userName , [1] = token
                     String userName = sessionArray[0];
                     String token = sessionArray[1];
 
                     login.setSessionUser(token);
                     System.out.println("Welcome " + userName + "\nTo logout the chat type /quit");
+
                     logged = true;
-                    break;
+
+                } else if (jServerReceive.toString().contains("register")){
+                    System.out.println("The registration of " + jServerReceive.getString("register") + " is completed \nPlease login");
                 }
 
-                System.out.println(responseServer);
 
                 if(responseLine.startsWith("/quit")) break;
             }
@@ -78,6 +86,9 @@ class DBManager {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Server con err");
+        } catch (JSONException e){
+            e.printStackTrace();
+            System.out.println("JSON error");
         }
     }
 
@@ -115,6 +126,8 @@ class DBManager {
 
 
 
+
+
     // Register information
     void registerServer(String username, String password, int age){
         this.serverConnect("register:"+ username + ":"+ password + ":"+ Integer.toString(age));
@@ -122,7 +135,17 @@ class DBManager {
 
     // Login information
     void loginServer(String username, String password){
-        this.serverConnect("login:"+ username + ":" + password);
+        // Create the JSON
+        JSONObject jSend ;
+        try {
+            JSONObject user = new JSONObject().put("username", username).put("password", password);
+            jSend = new JSONObject().put("login",user);
+            // Send to server
+            this.serverConnect(jSend.toString());
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
     }
 
     // Chat
